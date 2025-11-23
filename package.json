@@ -20,7 +20,7 @@
 	},
 	"devDependencies": {
 		"@internationalized/date": "^3.10.0",
-		"@lucide/svelte": "^0.554.0",
+		"@lucide/svelte": "^0.544.0",
 		"@oslojs/crypto": "^1.0.1",
 		"@oslojs/encoding": "^1.1.0",
 		"@sveltejs/adapter-auto": "^7.0.0",
