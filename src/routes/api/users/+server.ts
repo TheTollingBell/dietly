@@ -1,4 +1,4 @@
-import type { Actions } from './$types';
+import type { RequestHandler } from "./$types";
 import  * as table  from "$lib/server/db/schema";
 import { db } from "$lib/server/db";
 import { randomBytes } from "crypto";
@@ -6,10 +6,10 @@ import { verifyAuthInformation, type AuthInformation } from "$lib/types";
 import { hash } from "$lib/server/logins/password";
 import { redirect } from '@sveltejs/kit';
 
-export const actions = {
-	default: async (event) => {
-		console.log(await event.request.formData());
-		const requestJson: AuthInformation = verifyAuthInformation(await event.request.formData());
+export const POST: RequestHandler = async (event) => {
+		const requestJson: AuthInformation = await event.request.json();
+
+		verifyAuthInformation(requestJson)
 
 		const salt = randomBytes(16);
 		let {username, password} = requestJson;
@@ -22,6 +22,5 @@ export const actions = {
 
 		await db.insert(table.user).values(toInsert);
 
-		redirect(303, "/login")
-	}
-} satisfies Actions;
+		return new Response();
+}

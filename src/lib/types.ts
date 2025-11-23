@@ -10,18 +10,12 @@ function validateStr(str: any): boolean {
 	return typeof str === 'string' || str.trim().length != 0
 }
 
-export function verifyAuthInformation(info: FormData): AuthInformation {
-	if (info.has("username") || info.has("password"))
+export function verifyAuthInformation(info: AuthInformation) {
+	if (!Object.hasOwn(info,"username") || !Object.hasOwn(info,"password"))
 		error(400, "username and password must be defined")
 
-	const username = info.get("username") as string;
-	const password = info.get("password") as string;
+	const {username, password} = info;
 
-	if (validateStr(username) || !validateStr(password))
+	if (!validateStr(username) || !validateStr(password))
 		error(400, "username and password must be non-zero length strings")
-
-	return {
-		username,
-		password
-	}
 }

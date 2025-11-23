@@ -1,4 +1,4 @@
-import type { Actions } from "./$types";
+import type { RequestHandler } from "./$types";
 import { db } from "$lib/server/db";
 import  * as table  from "$lib/server/db/schema";
 import { verifyAuthInformation, type AuthInformation } from "$lib/types";
@@ -11,9 +11,10 @@ function authenticationFailure() {
 	error(401, "authentication failed");
 }
 
-export const actions = {
-	default: async (event) => {
-		let info: AuthInformation = verifyAuthInformation(await event.request.formData());
+export const POST: RequestHandler = async (event) => {
+		let info: AuthInformation = await event.request.json();
+
+	verifyAuthInformation(info);
 
 		const response = await db.select({
 			id: table.user.id,
@@ -37,5 +38,4 @@ export const actions = {
 		auth.setSessionTokenCookie(event, token, session.expiresAt);
 
 		return new Response();
-	}
-} satisfies Actions;
+}
