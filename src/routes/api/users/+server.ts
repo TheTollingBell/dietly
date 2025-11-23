@@ -15,8 +15,8 @@ export const POST: RequestHandler = async (event) => {
 		let {username, password} = requestJson;
 
 		const toInsert: table.UserInsert = {
-				username: username.toString(),
-				salt: Buffer.from(salt),
+				username: username.trim().toString(),
+				salt: salt.toString("hex"),
 				password: (await hash(Buffer.from(password), Buffer.from(salt))).toString('hex')
 		};
 

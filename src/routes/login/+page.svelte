@@ -30,7 +30,7 @@
 			return;
 		}
 
-		fetch('/api/users', {
+		fetch('/api/sessions', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
