@@ -6,12 +6,45 @@
 	import { Separator } from '$lib/components/ui/separator/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { redirect } from '@sveltejs/kit';
-	import { enhance } from '$app/forms';
-	import type { PageProps } from './$types';
+
+	let username = $state('');
+	let password = $state('');
 
 	const usernameRegex = /^[a-zA-Z0-9_]{1,32}$/;
 
-	function handleSignup({ formElement, formData, action, cancel, submitter }) {
+	function handleSignup(e: Event) {
+		e.preventDefault();
+		if (username.length === 0 || password.length === 0) {
+			alert('Please fill in both username and password.');
+			return;
+		}
+
+		if (username.length > 32) {
+			alert('Username must be less than 32 or equal to characters.');
+			return;
+		}
+
+		if (!usernameRegex.test(username)) {
+			alert('Username can only contain letters, numbers, and underscores.');
+			return;
+		}
+
+		fetch('/api/users', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				username,
+				password
+			})
+		}).then(async (res) => {
+			if (res.status === 200) {
+				redirect(200, '/app');
+			} else {
+				alert(`Error`);
+			}
+		});
 	}
 </script>
 
@@ -28,33 +61,10 @@
 				<Card.Title>Sign up</Card.Title>
 			</Card.Header>
 			<Card.Content>
-				<form method="POST" use:enhance={({ formElement, formData, action, cancel, submitter }) => {
-					console.log(formData)
-					const username = formData.get("username");
-					const password = formData.get("password");
-						if (username.length === 0 || password.length === 0) {
-							alert('Please fill in both username and password.');
-							cancel();
-							return;
-						}
-
-						if (username.length > 32) {
-							alert('Username must be less than 32 or equal to characters.');
-							cancel();
-							return;
-						}
-
-						if (!usernameRegex.test(username)) {
-							alert('Username can only contain letters, numbers, and underscores.');
-							cancel();
-							return;
-						}
-					}}>
-					<Input id="username" type="text" placeholder="Username" class="mb-4 w-full" />
-					<Input id="password" type="password" placeholder="Password" class="mb-4 w-full" />
-					<Separator class="my-4" />
-					<Button class="w-full"><button>Sign up</button></Button>
-				</form>
+				<Input type="text" placeholder="Username" class="mb-4 w-full" bind:value={username} />
+				<Input type="password" placeholder="Password" class="mb-4 w-full" bind:value={password} />
+				<Separator class="my-4" />
+				<Button class="w-full" onclick={handleSignup}>Sign up</Button>
 			</Card.Content>
 		</Card.Root>
 	</div>
