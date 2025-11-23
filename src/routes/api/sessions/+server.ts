@@ -31,7 +31,7 @@ export const POST: RequestHandler = async (event) => {
 
 		const {id: userId, salt, password} = response[0];
 
-		if (await hash(Buffer.from(info.password), Buffer.from(salt, "hex")) !== Buffer.from(password))
+		if ((await hash(Buffer.from(info.password), Buffer.from(salt, "hex"))).compare(Buffer.from(password)) === 0)
 			authenticationFailure();
 
 		const token = auth.generateSessionToken();
