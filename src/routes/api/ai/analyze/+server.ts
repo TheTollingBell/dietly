@@ -3,17 +3,17 @@ import { error } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 import type { ContentListUnion } from "@google/genai";
 
-const POST: RequestHandler = async (event) => {
+export const POST: RequestHandler = async (event) => {
 	const body = await event.request.text();
 
 	if (body === null)
-		error(400, "body must contain an image");
+		error(500, "body must contain an image");
 
 	const contents: ContentListUnion = [
 		{
 			inlineData: {
 				mimeType: "image/jpeg",
-				data: body,
+				data: body.slice(23),
 			},
 		},
 		{ text: "Identify what type of food this is. Predict the amount of calories using the image and average calorie counts for the type of food. Return amount of calories as `cal` and the identified food as `name`." },
@@ -42,5 +42,5 @@ const POST: RequestHandler = async (event) => {
 		}
 	});
 
-	return new Response(response.data);
+	return new Response(response.text);
 }

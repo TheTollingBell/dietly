@@ -44,8 +44,8 @@
                 }).then(async (res) => {
                     if (res.status === 200) {
                         const data = await res.json();
-                        guessedFood = data.food;
-                        guessedCalories = data.calories;
+                        guessedFood = data.name;
+                        guessedCalories = data.cal;
                     } else {
                         alert("Error analyzing image");
                     }
