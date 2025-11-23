@@ -80,6 +80,23 @@
             hasAdviceBeenGenerated = false;
             return;
         }
+
+        fetch("api/ai/advice", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(foodData)
+        }).then(async (res) => {
+            if (res.status === 200) {
+                const data = await res.json();
+                adviceList = data;
+                hasAdviceBeenGenerated = true;
+            } else {
+                alert("Error generating advice");
+            }
+        })
+
         adviceList = [
             "Try to include more vegetables in your meals.",
             "Consider reducing your intake of sugary drinks.",
