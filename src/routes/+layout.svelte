@@ -13,3 +13,9 @@
 >
 	{@render children()}
 </div>
+
+<style>
+	:root {
+		font-family: 'Inter', arial;
+	}
+</style>
