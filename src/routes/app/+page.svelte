@@ -108,9 +108,15 @@
     }
 
     function handleLogout() {
-        alert('Logged out');
-        alert('TODO');
-        // TODO: Implement logout functionality
+        fetch("/api/sessions", {
+            method: "DELETE"
+        }).then(async (res) => {
+            if (res.status === 200) {
+                goto("/");
+            } else {
+                alert("Error logging out");
+            }
+        });
     }
 
 </script>
