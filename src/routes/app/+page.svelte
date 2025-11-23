@@ -19,27 +19,39 @@
 	let guessedFood: string = $state('');
 	let guessedCalories: number | null = $state(null);
 
+    function getBase64DataURL(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = (error) => reject(error);
+        });
+    }
+
 	function handleImageUpload(event: Event) {
 		const target = event.target as HTMLInputElement;
 		if (target.files && target.files.length > 0) {
 			uploadedImage = target.files[0];
 			uploadedImageURL = URL.createObjectURL(uploadedImage);
 
-            fetch("/api/ai/analyze", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "image/jpeg"
-                },
-                body: uploadedImage
-            }).then(async (res) => {
-                if (res.status === 200) {
-                    const data = await res.json();
-                    guessedFood = data.food;
-                    guessedCalories = data.calories;
-                } else {
-                    alert("Error analyzing image");
-                }
-            });
+            (async () => {
+                fetch("/api/ai/analyze", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "image/jpeg"
+                    },
+                    body: await getBase64DataURL(uploadedImage)
+                }).then(async (res) => {
+                    if (res.status === 200) {
+                        const data = await res.json();
+                        guessedFood = data.food;
+                        guessedCalories = data.calories;
+                    } else {
+                        alert("Error analyzing image");
+                    }
+                });
+            })();
+            
 			
 		}
 	}
