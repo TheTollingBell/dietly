@@ -39,6 +39,9 @@ importers:
       '@types/node':
         specifier: ^24
         version: 24.10.1
+      argon2id:
+        specifier: ^1.0.1
+        version: 1.0.1
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
@@ -675,6 +678,9 @@ packages:
     resolution: {integrity: sha512-NZyJarBfL7nWwIq+FDL6Zp/yHEhePMNnnJ0y3qfieCrmNvYct8uvtiV41UvlSe6apAfk0fY1FbWx+NwfmpvtTg==}
     engines: {node: '>=0.4.0'}
     hasBin: true
+
+  argon2id@1.0.1:
+    resolution: {integrity: sha512-rsiD3lX+0L0CsiZARp3bf9EGxprtuWAT7PpiJd+Fk53URV0/USOQkBIP1dLTV8t6aui0ECbymQ9W9YCcTd6XgA==}
 
   aria-query@5.3.2:
     resolution: {integrity: sha512-COROpnaoap1E2F000S62r6A60uHZnmlvomhfyT2DlTcrY1OrBKn2UhH7qn5wTC9zMvD0AY7csdPSNwKP+7WiQw==}
@@ -1523,6 +1529,8 @@ snapshots:
       undici-types: 7.16.0
 
   acorn@8.15.0: {}
+
+  argon2id@1.0.1: {}
 
   aria-query@5.3.2: {}
 
