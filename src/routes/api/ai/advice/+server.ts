@@ -12,13 +12,7 @@ export const POST: RequestHandler = async (event) => {
 	const body = await event.request.text();
 
 	const contents: ContentListUnion = [
-		{
-			inlineData: {
-				mimeType: "application/json",
-				data: body,
-			},
-		},
-		{ text: "This is a list of foods consumed in a day and their estimated caloric value. Return 2-4 pieces of advice in the array of strings, `advice`." },
+		{ text: "This is a list of foods consumed in a day and their estimated caloric value. Return 2-4 pieces of advice specific to the diet listedin the array of strings, `advice`. Remember that the person could just be starting their day, so if their diet is very small, suggest some more foods to help fill out the day:\n```json\n" + body + "\n```"},
 	];
 
 	const response = await ai.models.generateContent({
