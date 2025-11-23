@@ -2,9 +2,15 @@
 	import * as Card from '$lib/components/ui/card/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Separator } from '$lib/components/ui/separator/index.js';
+	import * as Avatar from '$lib/components/ui/avatar/index.js';
+	import logo from '$lib/assets/logo.png';
 </script>
 
-<div class="flex items-center justify-center h-screen">
+<div class="flex flex-col items-center justify-center h-screen">
+	<Avatar.Root class="w-64 h-64 -mt-32">
+		<Avatar.Image src={logo} alt="Diety" />
+		<Avatar.Fallback>D</Avatar.Fallback>
+	</Avatar.Root>
 	<div class="grid grid-cols-2 gap-4">
 		<div class="flex flex-col m-auto">
 			<div class="font-bold text-6xl m-auto">Diety⚡</div>
