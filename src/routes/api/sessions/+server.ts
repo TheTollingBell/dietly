@@ -23,14 +23,15 @@ export const POST: RequestHandler = async (event) => {
 		})
 			.from(table.user)
 			.limit(1)
-		.where(eq(table.user.username, info.username.toString()));
+		.where(eq(table.user.username, info.username.trim().toString()));
 
-		if (response.length !== 1)
+		if (response.length !== 1) {
 			authenticationFailure()
+	}
 
 		const {id: userId, salt, password} = response[0];
 
-		if (await hash(Buffer.from(info.password), salt) !== Buffer.from(password))
+		if (await hash(Buffer.from(info.password), Buffer.from(salt, "hex")) !== Buffer.from(password))
 			authenticationFailure();
 
 		const token = auth.generateSessionToken();
