@@ -8,7 +8,7 @@
 	<div class="grid grid-cols-2 gap-4">
 		<div class="flex flex-col m-auto">
 			<div class="font-bold text-6xl m-auto">Diety⚡</div>
-            <Separator class="my-4" />
+			<Separator class="my-4" />
 			<div class="ml-2 m-auto">Your AI-Powered food diary!</div>
 		</div>
 		<div class="m-auto">
