@@ -8,22 +8,22 @@
 	import { Input } from '$lib/components/ui/input/index.js';
 	import * as Sheet from '$lib/components/ui/sheet/index.js';
 
-	const foodData: { name: string; calories: number }[] = [];
+	let foodData: { name: string; calories: number }[] = $state([]);
+
+    $effect(() => {
+        foodData = JSON.parse(localStorage.getItem('foodData') || '[]');
+    });
 
 	let uploadedImageURL: string | null = $state(null);
 	let uploadedImage: File | null = $state(null);
 	let guessedFood: string = $state('');
 	let guessedCalories: number | null = $state(null);
 
-	$inspect('uploadedImage', { uploadedImage });
-
 	function handleImageUpload(event: Event) {
 		const target = event.target as HTMLInputElement;
 		if (target.files && target.files.length > 0) {
 			uploadedImage = target.files[0];
 			uploadedImageURL = URL.createObjectURL(uploadedImage);
-			// TODO: Call AI service to analyze image and get food data
-			// For now, we will just set some dummy data
 
             fetch("/api/ai/analyze", {
                 method: "POST",
@@ -43,6 +43,20 @@
 			
 		}
 	}
+
+    function handleAddItem() {
+        if (guessedFood && guessedCalories) {
+            foodData.push({ name: guessedFood, calories: guessedCalories });
+            localStorage.setItem('foodData', JSON.stringify(foodData));
+            // Reset inputs
+            uploadedImage = null;
+            uploadedImageURL = null;
+            guessedFood = '';
+            guessedCalories = null;
+        } else {
+            alert('Please provide both food name and calories.');
+        }
+    }
 
     let adviceList: string[] = $state([]);
     let hasAdviceBeenGenerated: boolean = $state(false);
@@ -114,15 +128,15 @@
 											type="text"
 											placeholder="Guessed Food Item"
 											class="mt-4 w-full"
-											value={guessedFood}
+											bind:value={guessedFood}
 										/>
 										<Input
 											type="number"
 											placeholder="Guessed Calories"
 											class="mt-4 w-full"
-											value={guessedCalories}
+											bind:value={guessedCalories}
 										/>
-										<Button class="mt-4 w-full">Add to Log</Button>
+										<Button class="mt-4 w-full" onclick={handleAddItem}>Add to Log</Button>
 									{:else}
 										<div class="mt-4">No image uploaded yet.</div>
 									{/if}
