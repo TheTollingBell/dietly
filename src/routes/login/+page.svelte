@@ -50,7 +50,7 @@
 <div class="flex flex-col items-center justify-center h-screen">
 	<a href="/">
 		<Avatar.Root class="w-64 h-64 m-auto mb-0 mt-16">
-			<Avatar.Image src={logo} alt="Diety" />
+			<Avatar.Image src={logo} alt="Dietly" />
 			<Avatar.Fallback>D</Avatar.Fallback>
 		</Avatar.Root>
 	</a>

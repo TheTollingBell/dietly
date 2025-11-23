@@ -8,12 +8,12 @@
 
 <div class="flex flex-col items-center justify-center h-screen">
 	<Avatar.Root class="w-64 h-64 -mt-32">
-		<Avatar.Image src={logo} alt="Diety" />
+		<Avatar.Image src={logo} alt="Dietly" />
 		<Avatar.Fallback>D</Avatar.Fallback>
 	</Avatar.Root>
 	<div class="grid grid-cols-2 gap-4">
 		<div class="flex flex-col m-auto">
-			<div class="font-bold text-6xl m-auto">Diety⚡</div>
+			<div class="font-bold text-6xl m-auto">Dietly⚡</div>
 			<Separator class="my-4" />
 			<div class="ml-2 m-auto">Your AI-Powered food diary!</div>
             <div class="m1-2 m-auto">Reach your calorie goal responsibly.</div>
