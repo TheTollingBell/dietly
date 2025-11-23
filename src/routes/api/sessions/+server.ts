@@ -40,3 +40,15 @@ export const POST: RequestHandler = async (event) => {
 
 		return new Response();
 }
+
+export const DELETE: RequestHandler = async (event) => {
+	const session_id = event.cookies.get(auth.sessionCookieName)
+
+	if (typeof session_id !== "string")
+		error(400, "session cookie doesn't exist or is incorrectly formatted");
+
+	auth.deleteSessionTokenCookie(event);
+	await auth.invalidateSession(session_id);
+
+	return new Response()
+}
