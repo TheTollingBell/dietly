@@ -5,6 +5,7 @@
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Separator } from '$lib/components/ui/separator/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
+	import { redirect } from '@sveltejs/kit'
 
 	let username = $state('');
 	let password = $state('');
@@ -39,7 +40,7 @@
 			})
 		}).then(async (res) => {
 			if (res.status === 200) {
-				redirect(200, '/app');
+				redirect(303, '/app');
 			} else {
 				alert(`Error`);
 			}
@@ -60,10 +61,12 @@
 				<Card.Title>Sign in</Card.Title>
 			</Card.Header>
 			<Card.Content>
-				<Input type="text" placeholder="Username" class="mb-4 w-full" bind:value={username} />
-				<Input type="password" placeholder="Password" class="mb-4 w-full" bind:value={password} />
-				<Separator class="my-4" />
-				<Button class="w-full" onclick={handleSignup}>Sign in</Button>
+				<form method="POST">
+					<Input type="text" placeholder="Username" class="mb-4 w-full" bind:value={username} />
+					<Input type="password" placeholder="Password" class="mb-4 w-full" bind:value={password} />
+					<Separator class="my-4" />
+					<Button class="w-full"><button>Sign in</button></Button>
+				</form>
 			</Card.Content>
 		</Card.Root>
 	</div>
