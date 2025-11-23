@@ -6,6 +6,7 @@
 	import { Separator } from '$lib/components/ui/separator/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { redirect } from '@sveltejs/kit';
+	import { goto } from "$app/navigation";
 
 	let username = $state('');
 	let password = $state('');
@@ -40,7 +41,7 @@
 			})
 		}).then(async (res) => {
 			if (res.status === 200) {
-				redirect(200, '/app');
+				goto('/login');
 			} else {
 				alert(`Error`);
 			}
