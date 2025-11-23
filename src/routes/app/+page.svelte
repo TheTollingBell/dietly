@@ -24,10 +24,51 @@
 			uploadedImageURL = URL.createObjectURL(uploadedImage);
 			// TODO: Call AI service to analyze image and get food data
 			// For now, we will just set some dummy data
-			guessedFood = 'Sample Food Item';
-			guessedCalories = 250;
+
+            fetch("/api/ai/analyze", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "image/jpeg"
+                },
+                body: uploadedImage
+            }).then(async (res) => {
+                if (res.status === 200) {
+                    const data = await res.json();
+                    guessedFood = data.food;
+                    guessedCalories = data.calories;
+                } else {
+                    alert("Error analyzing image");
+                }
+            });
+			
 		}
 	}
+
+    let adviceList: string[] = $state([]);
+    let hasAdviceBeenGenerated: boolean = $state(false);
+
+    function generateAdvice(open: boolean) {
+        if (!open) {
+            adviceList = [];
+            hasAdviceBeenGenerated = false;
+            return;
+        }
+        adviceList = [
+            "Try to include more vegetables in your meals.",
+            "Consider reducing your intake of sugary drinks.",
+            "Aim for balanced meals with protein, carbs, and fats.",
+            "Stay hydrated throughout the day.",
+            "Incorporate regular physical activity into your routine."
+        ];
+        hasAdviceBeenGenerated = true;
+    }
+
+    function handleLogout() {
+        alert('Logged out');
+        alert('TODO');
+        // TODO: Implement logout functionality
+    }
+
 </script>
 
 <div class="flex flex-col items-center justify-center h-screen">
@@ -37,6 +78,8 @@
 			<Avatar.Fallback>D</Avatar.Fallback>
 		</Avatar.Root>
 	</a>
+
+    <Button class="mb-8 mt-0" variant="outline" onclick={handleLogout}>Logout</Button>
 
 	<div class="m-auto mt-0">
 		<Card.Root class="w-140">
@@ -56,7 +99,7 @@
 				</div>
 				<div class="flex justify-center">
 					<Sheet.Root>
-						<Sheet.Trigger class={buttonVariants()}>Add Food</Sheet.Trigger>
+						<Sheet.Trigger class={buttonVariants() + " mt-4 ml-2"}>Add Food</Sheet.Trigger>
 						<Sheet.Content>
 							<Sheet.Header>
 								<Sheet.Title>Add a food item</Sheet.Title>
@@ -89,6 +132,30 @@
 					</Sheet.Root>
 
 					<!-- <Button variant="outline" class="mt-4 ml-2">Analyze</Button> -->
+                    <Sheet.Root onOpenChange={generateAdvice}>
+						<Sheet.Trigger class={buttonVariants() + " mt-4 ml-2"}>Analyze</Sheet.Trigger>
+						<Sheet.Content>
+							<Sheet.Header>
+								<Sheet.Title>Analyze your log</Sheet.Title>
+								<Sheet.Description>
+									<div class="mb-4">
+										Here is the analysis of your eating habits and some improvements that you can make.
+									</div>
+
+                                    {#if hasAdviceBeenGenerated}
+                                        <ul class="list-disc list-inside">
+                                            {#each adviceList as advice}
+                                                <li>{advice}</li>
+                                            {/each}
+                                        </ul>
+                                    {:else}
+                                        <div>Generating...</div>
+                                    {/if}
+									
+								</Sheet.Description>
+							</Sheet.Header>
+						</Sheet.Content>
+					</Sheet.Root>
 				</div>
 			</Card.Content>
 		</Card.Root>

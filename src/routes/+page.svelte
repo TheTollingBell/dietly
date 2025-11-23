@@ -16,6 +16,10 @@
 			<div class="font-bold text-6xl m-auto">Diety⚡</div>
 			<Separator class="my-4" />
 			<div class="ml-2 m-auto">Your AI-Powered food diary!</div>
+            <div class="m1-2 m-auto">Reach your calorie goal responsibly.</div>
+            <div class="ml-2 m-auto">Track your meals effortlessly.</div>
+			<div class="ml-2 m-auto">How will you stay healthy this year?</div>
+            <!-- add more descriptions of what it does -->
 		</div>
 		<div class="m-auto">
 			<Card.Root class="w-80">
