@@ -10,23 +10,23 @@
 
 	let foodData: { name: string; calories: number }[] = $state([]);
 
-    $effect(() => {
-        foodData = JSON.parse(localStorage.getItem('foodData') || '[]');
-    });
+	$effect(() => {
+		foodData = JSON.parse(localStorage.getItem('foodData') || '[]');
+	});
 
 	let uploadedImageURL: string | null = $state(null);
 	let uploadedImage: File | null = $state(null);
 	let guessedFood: string = $state('');
 	let guessedCalories: number | null = $state(null);
 
-    function getBase64DataURL(file) {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = (error) => reject(error);
-        });
-    }
+	function getBase64DataURL(file) {
+		return new Promise((resolve, reject) => {
+			const reader = new FileReader();
+			reader.readAsDataURL(file);
+			reader.onload = () => resolve(reader.result);
+			reader.onerror = (error) => reject(error);
+		});
+	}
 
 	function handleImageUpload(event: Event) {
 		const target = event.target as HTMLInputElement;
@@ -34,84 +34,80 @@
 			uploadedImage = target.files[0];
 			uploadedImageURL = URL.createObjectURL(uploadedImage);
 
-            (async () => {
-                fetch("/api/ai/analyze", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "image/jpeg"
-                    },
-                    body: await getBase64DataURL(uploadedImage)
-                }).then(async (res) => {
-                    if (res.status === 200) {
-                        const data = await res.json();
-                        guessedFood = data.name;
-                        guessedCalories = data.cal;
-                    } else {
-                        alert("Error analyzing image");
-                    }
-                });
-            })();
-            
-			
+			(async () => {
+				fetch('/api/ai/analyze', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'image/jpeg'
+					},
+					body: await getBase64DataURL(uploadedImage)
+				}).then(async (res) => {
+					if (res.status === 200) {
+						const data = await res.json();
+						guessedFood = data.name;
+						guessedCalories = data.cal;
+					} else {
+						alert('Error analyzing image');
+					}
+				});
+			})();
 		}
 	}
 
+	function handleAddItem() {
+		if (guessedFood && guessedCalories) {
+			foodData.push({ name: guessedFood, calories: guessedCalories });
+			localStorage.setItem('foodData', JSON.stringify(foodData));
+			// Reset inputs
+			uploadedImage = null;
+			uploadedImageURL = null;
+			guessedFood = '';
+			guessedCalories = null;
+		} else {
+			alert('Please provide both food name and calories.');
+		}
+	}
 
-    function handleAddItem() {
-        if (guessedFood && guessedCalories) {
-            foodData.push({ name: guessedFood, calories: guessedCalories });
-            localStorage.setItem('foodData', JSON.stringify(foodData));
-            // Reset inputs
-            uploadedImage = null;
-            uploadedImageURL = null;
-            guessedFood = '';
-            guessedCalories = null;
-        } else {
-            alert('Please provide both food name and calories.');
-        }
-    }
+	let adviceList: string[] = $state([]);
+	let hasAdviceBeenGenerated: boolean = $state(false);
 
-    let adviceList: string[] = $state([]);
-    let hasAdviceBeenGenerated: boolean = $state(false);
+	function generateAdvice(open: boolean) {
+		if (!open) {
+			adviceList = [];
+			hasAdviceBeenGenerated = false;
+			return;
+		}
 
-    function generateAdvice(open: boolean) {
-        if (!open) {
-            adviceList = [];
-            hasAdviceBeenGenerated = false;
-            return;
-        }
+		fetch('api/ai/advice', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(foodData)
+		}).then(async (res) => {
+			if (res.status === 200) {
+				const data = await res.json();
+				adviceList = data;
+				hasAdviceBeenGenerated = true;
+			} else {
+				alert('Error generating advice');
+			}
+		});
 
-        fetch("api/ai/advice", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(foodData)
-        }).then(async (res) => {
-            if (res.status === 200) {
-                const data = await res.json();
-                adviceList = data;
-                hasAdviceBeenGenerated = true;
-            } else {
-                alert("Error generating advice");
-            }
-        })
+		hasAdviceBeenGenerated = true;
+	}
 
-        hasAdviceBeenGenerated = true;
-    }
-
-    function handleLogout() {
-        fetch("/api/sessions", {
-            method: "DELETE"
-        }).then(async (res) => {
-            if (res.status === 200) {
-                goto("/");
-            } else {
-                alert("Error logging out");
-            }
-        });
-    }
-
+	function handleLogout() {
+		fetch('/api/sessions', {
+			method: 'DELETE'
+		}).then(async (res) => {
+			if (res.status === 200) {
+				goto('/');
+			} else {
+				alert('Error logging out');
+			}
+		});
+	}
 </script>
 
 <div class="flex flex-col items-center justify-center h-screen">
@@ -122,7 +118,7 @@
 		</Avatar.Root>
 	</a>
 
-    <Button class="mb-8 mt-0" variant="outline" onclick={handleLogout}>Logout</Button>
+	<Button class="mb-8 mt-0" variant="outline" onclick={handleLogout}>Logout</Button>
 
 	<div class="m-auto mt-0">
 		<Card.Root class="w-140">
@@ -138,7 +134,7 @@
 				{/each}
 				<div class="flex justify-center">
 					<Sheet.Root>
-						<Sheet.Trigger class={buttonVariants() + " mt-4 ml-2"}>Add Food</Sheet.Trigger>
+						<Sheet.Trigger class={buttonVariants() + ' mt-4 ml-2'}>Add Food</Sheet.Trigger>
 						<Sheet.Content>
 							<Sheet.Header>
 								<Sheet.Title>Add a food item</Sheet.Title>
@@ -171,26 +167,26 @@
 					</Sheet.Root>
 
 					<!-- <Button variant="outline" class="mt-4 ml-2">Analyze</Button> -->
-                    <Sheet.Root onOpenChange={generateAdvice}>
-						<Sheet.Trigger class={buttonVariants() + " mt-4 ml-2"}>Analyze</Sheet.Trigger>
+					<Sheet.Root onOpenChange={generateAdvice}>
+						<Sheet.Trigger class={buttonVariants() + ' mt-4 ml-2'}>Analyze</Sheet.Trigger>
 						<Sheet.Content>
 							<Sheet.Header>
 								<Sheet.Title>Analyze your log</Sheet.Title>
 								<Sheet.Description>
 									<div class="mb-4">
-										Here is the analysis of your eating habits and some improvements that you can make.
+										Here is the analysis of your eating habits and some improvements that you can
+										make.
 									</div>
 
-                                    {#if hasAdviceBeenGenerated}
-                                        <ul class="list-disc list-inside">
-                                            {#each adviceList as advice}
-                                                <li>{advice}</li>
-                                            {/each}
-                                        </ul>
-                                    {:else}
-                                        <div>Generating...</div>
-                                    {/if}
-									
+									{#if hasAdviceBeenGenerated}
+										<ul class="list-disc list-inside">
+											{#each adviceList as advice}
+												<li>{advice}</li>
+											{/each}
+										</ul>
+									{:else}
+										<div>Generating...</div>
+									{/if}
 								</Sheet.Description>
 							</Sheet.Header>
 						</Sheet.Content>

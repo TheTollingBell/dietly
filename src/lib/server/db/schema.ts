@@ -3,7 +3,7 @@ import { pgTable, text, timestamp, varchar, char, integer, customType } from 'dr
 export const user = pgTable('user', {
 	id: integer().primaryKey().generatedAlwaysAsIdentity(),
 	username: varchar({ length: 32 }).unique().notNull(),
-	salt: char({length: 32}).notNull(),
+	salt: char({ length: 32 }).notNull(),
 	password: varchar({ length: 255 }).notNull()
 });
 
