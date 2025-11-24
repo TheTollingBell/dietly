@@ -97,13 +97,6 @@
             }
         })
 
-        adviceList = [
-            "Try to include more vegetables in your meals.",
-            "Consider reducing your intake of sugary drinks.",
-            "Aim for balanced meals with protein, carbs, and fats.",
-            "Stay hydrated throughout the day.",
-            "Incorporate regular physical activity into your routine."
-        ];
         hasAdviceBeenGenerated = true;
     }
 
@@ -143,10 +136,6 @@
 						<div>{food.calories} kcal</div>
 					</div>
 				{/each}
-				<div class="flex justify-between font-bold mt-4">
-					<div>Total</div>
-					<div>{foodData.reduce((total, food) => total + food.calories, 0)} kcal</div>
-				</div>
 				<div class="flex justify-center">
 					<Sheet.Root>
 						<Sheet.Trigger class={buttonVariants() + " mt-4 ml-2"}>Add Food</Sheet.Trigger>
