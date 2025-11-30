@@ -4,7 +4,7 @@ import * as table from '$lib/server/db/schema';
 import { verifyAuthInformation, type AuthInformation } from '$lib/types';
 import { eq } from 'drizzle-orm';
 import { error } from '@sveltejs/kit';
-import { hash } from '$lib/server/logins/password';
+import { verify } from '$lib/server/logins/password';
 import * as auth from '$lib/server/auth';
 
 function authenticationFailure() {
@@ -19,7 +19,6 @@ export const POST: RequestHandler = async (event) => {
 	const response = await db
 		.select({
 			id: table.user.id,
-			salt: table.user.salt,
 			password: table.user.password
 		})
 		.from(table.user)
@@ -30,14 +29,12 @@ export const POST: RequestHandler = async (event) => {
 		authenticationFailure();
 	}
 
-	const { id: userId, salt, password } = response[0];
+	const { id: userId, password } = response[0];
 
-	if (
-		(await hash(Buffer.from(info.password), Buffer.from(salt, 'hex'))).compare(
-			Buffer.from(password)
-		) === 0
-	)
+	const isValid = await verify(password, Buffer.from(info.password));
+	if (!isValid) {
 		authenticationFailure();
+	}
 
 	const token = auth.generateSessionToken();
 	const session = await auth.createSession(token, userId);

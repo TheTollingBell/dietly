@@ -1,26 +1,21 @@
-import { argon2 } from 'crypto';
+import * as argon2 from 'argon2';
 
-// Using OWASP recommendations
-const ARGON2ID_PARAMETERS = {
-	memory: 7168,
-	passes: 5,
+// Using OWASP recommendations for argon2id
+const ARGON2ID_OPTIONS: argon2.Options = {
+	memoryCost: 7168,
+	timeCost: 5,
 	parallelism: 1,
-	tagLength: 32
+	hashLength: 32,
+	type: argon2.argon2id
 };
 
-export function hash(password: Buffer, salt: Buffer): Promise<Buffer> {
-	return new Promise((resolve) => {
-		argon2(
-			'argon2id',
-			{
-				...ARGON2ID_PARAMETERS,
-				message: password,
-				nonce: salt
-			},
-			(err, hash) => {
-				if (err) throw err;
-				resolve(hash);
-			}
-		);
+export async function hash(password: Buffer, salt: Buffer): Promise<string> {
+	return argon2.hash(password, {
+		...ARGON2ID_OPTIONS,
+		salt
 	});
+}
+
+export async function verify(storedHash: string, password: Buffer): Promise<boolean> {
+	return argon2.verify(storedHash, password);
 }
